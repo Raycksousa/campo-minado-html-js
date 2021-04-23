@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>campoMinado</title>
+        <Script type+"text/javascript" src="js.js"></Script>
+        <style type="text/css">
+
+         td{
+             width:50px;
+             height:50px;
+             border:1px solid #000;
+             }
+        .btn{
+            width: 50px;
+            height:50px;
+                    }
+      
+         </style>
+         
+         
+    </head>
+    <body>
+      <table>
+     <script type="text/javascript">  
+     var k = 0;
+      for(var i =0;i < 9 ; i++) {
+         document.write('<tr>');
+         for(var j = 0;j < 9;j++){
+            k = k +1;
+            var num=Math.floor(Math.random()*3)
+             document.write('<td><input type="button" class="btn" id="'+k+'" onclick="controle('+num+','+k+');" value="X"></td>');
+         }
+             document.write ('</tr>');
+
+      }
+      
+           
+        </script>
+       </table>
+    </body>
+</html> 
