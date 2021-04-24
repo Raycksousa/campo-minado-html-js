@@ -35,7 +35,130 @@
 
       }
       
-           
+         var campoMinado = new CampoMinado();
+            
+            
+            document.getElementById('exibir-execucao').innerHTML += '----------- Início do jogo -----------';
+            document.getElementById('exibir-execucao').innerHTML += '<pre>' + campoMinado.Tabuleiro() + '</pre>';
+            
+            function calcularNumeroLinha(posicao) {
+                return ~~(posicao / 9) + 1;
+            }
+            
+            function calcularNumeroColuna(linha, posicao) {
+                return linha == 1 
+                    ? posicao + 1 
+                    : posicao - (((linha - 1) * 9)) + 1;
+            }
+            
+            var casasFechadas = [];
+            var casasComBombas = [];
+            var casasParaAbrir = [];
+
+            while(campoMinado.JogoStatus() == 0) {
+                var tabuleiro = campoMinado.Tabuleiro();
+
+                document.getElementById('exibir-execucao').innerHTML += '----------- Status: Jogo em aberto -----------';
+                document.getElementById('exibir-execucao').innerHTML += '<pre>' + tabuleiro + '</pre>';
+
+                tabuleiro = tabuleiro.split('\r\n').join('');
+
+                for (var i = 0; i < 81; i++) {
+                    if (i % 9 == 0) {
+                        var linha = calcularNumeroLinha(i);
+                    }
+                    var coluna = calcularNumeroColuna(linha, i);
+
+                    if (tabuleiro[i] != 0 && tabuleiro[i] != '-') {
+                        // Topo Esquerda
+                        if (linha != 1 && coluna != 1 && tabuleiro[i - 10] == '-')
+                        {
+                            casasFechadas.push(i - 10);
+                        }
+
+                        // Topo
+                        if (linha != 1 && tabuleiro[i - 9] == '-')
+                        {
+                            casasFechadas.push(i - 9);
+                        }
+
+                        // Topo Direita
+                        if (linha != 1 && coluna != 9 && tabuleiro[i - 8] == '-')
+                        {
+                            casasFechadas.push(i - 8);
+                        }
+
+                        // Direita
+                        if (coluna != 9 && tabuleiro[i + 1] == '-')
+                        {
+                            casasFechadas.push(i + 1);
+                        }
+                        
+                        // Abaixo Direita
+                        if (linha != 9 && coluna != 9 && tabuleiro[i + 10] == '-')
+                        {
+                            casasFechadas.push(i + 10);
+                        }
+
+                        // Abaixo
+                        if (linha != 9 && tabuleiro[i + 9] == '-')
+                        {
+                            casasFechadas.push(i + 9);
+                        }
+
+                        // Abaixo Esquerda
+                        if (linha != 9 && coluna != 1 && tabuleiro[i + 8] == '-')
+                        {
+                            casasFechadas.push(i + 8);
+                        }
+                        
+                        // Esquerda
+                        if (coluna != 1 && tabuleiro[i - 1] == '-')
+                        {
+                            casasFechadas.push(i - 1);
+                        }
+
+                        // Se quantidade de casas fechadas for igual ao número informativo de bombas da casa, registra essas casas fechadas como bombas.
+                        if (casasFechadas.length == tabuleiro[i]) {
+                            casasFechadas.forEach(casa => {
+                                if (casasComBombas.indexOf(casa) == -1) {
+                                    var linhaBomba = calcularNumeroLinha(casa);
+                                    var colunaBomba = calcularNumeroColuna(linhaBomba, casa);
+
+                                    document.getElementById('exibir-execucao').innerHTML += '<pre>Bomba encontrada: linha('+linhaBomba+') / coluna('+colunaBomba+')</pre>';
+                                    casasComBombas.push(casa);
+                                }
+                            });
+                        } 
+                        
+                        if (casasFechadas.length > tabuleiro[i]) {
+                            casasParaAbrir = casasFechadas.filter(x => !casasComBombas.includes(x));
+                            if ((casasFechadas.length - tabuleiro[i]) == casasParaAbrir.length) {
+                                casasParaAbrir.forEach(casa => {
+                                    var linhaAbrir = calcularNumeroLinha(casa);
+                                    var colunaAbrir = calcularNumeroColuna(linhaAbrir, casa);
+                                    campoMinado.Abrir(linhaAbrir, colunaAbrir);
+
+                                    document.getElementById('exibir-execucao').innerHTML += '<pre>Abrindo casa: linha('+linhaAbrir+') / coluna('+colunaAbrir+')</pre>';
+                                });
+                                
+                                casasFechadas = [];
+                                break;
+                            }
+                        }
+
+                        casasFechadas = [];
+                    }
+                }
+            }
+
+            document.getElementById('exibir-execucao').innerHTML += '----------- Status: '+(campoMinado.JogoStatus() == 1 ? 'Vitoria' : 'Game Over') +' -----------';
+            document.getElementById('exibir-execucao').innerHTML += '<pre>' + campoMinado.Tabuleiro() + '</pre>';    
+
+  
+         
+         
+         
         </script>
        </table>
     </body>
